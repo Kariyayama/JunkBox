@@ -1,0 +1,24 @@
+#!/bin/bash
+argv=("$@")
+doc=''
+if [ "${#argv[@]}" -ge 4 ]; then
+  for((i=1; i < "${#argv[@]}"; i++))
+  do
+    pattern=''
+    for((j=($i + 1); j < "${#argv[@]}"; j++))
+    do
+      pattern="${pattern} -e ${argv[$j]}"
+    done
+    if test "${pattern}" != '' ; then
+      doc="${doc} `cat $1 | grep ${argv[$i]} | grep ${pattern}`"
+    fi
+  done
+elif [ "${#argv[@]}" -eq 3 ]; then
+  doc=`cat $1 | grep ${argv[1]} | grep ${argv[2]}`
+elif [ "${#argv[@]}" -eq 2 ]; then
+  doc=`cat $1 | grep ${argv[1]}`
+else
+  doc="Argment error!"
+fi
+
+echo $doc | tr ' ' "\n" 
