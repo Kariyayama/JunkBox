@@ -4,20 +4,10 @@ def help
   puts "  -i : File input. This option always last."
   puts "  -I : Input file list."
   puts "  -p : you can use regular expression. you don't need '/'"
-#  puts "  -s : you can save output. If SAVE_FILE is empty, save as FILE.col"
-#  ptus "  -S : save file OVERWRITE"
 end
 
 pattern = ARGV[ARGV.index('-p') + 1] if ARGV.include?('-p')
 help if ARGV.include?('-h') || ARGV.include?('--help')
-
-#if ARGV.include?('-s') || ARGV.include?('-S')
-#  saveflag = 2 if ARGV.include?('-S')
-#  saveflag = 1 if ARGV.include?('-s')
-#  fname   = ARGV[ARGV.index('-s') + 1] if ARGV[ARGV.index('-s') + 1] != '-p' || ARGV[ARGV.index('-s') + 1] != '-i'
-#else 
-#  saveflag = 0
-#end
 
 if ARGV.include?('-h')
   help
@@ -53,7 +43,6 @@ end
 domhash = Hash.new
 st = ""; i = 11; im = 0
 input.each_line do |line|
-  # unless line.include?("#")
   line.chomp.scan(/#{pattern}/).each do |dom|
     i += 3                if domhash.fetch(dom, nil) == nil 
     domhash.store(dom, i) if domhash.fetch(dom, nil) == nil 
@@ -64,20 +53,8 @@ input.each_line do |line|
   end
   st << line
 end
-#    st << "\n"
-#  end
-#  st << "Alert: Match pattern number over the color pattern. Over pattern is cerculated" if im == 1
-#end
-# st = standerd.join("\n") if standerd != nil
+
 domhash.each_key do |key|
   st.gsub!(key, "\e[38;05;#{domhash[key]};1m#{key}\e[0m")
 end
-# Avoid Error (More better way exist?)
-# st.delete!("'")
-# st.gsub!("'", "'\''")
-
-# fname = "#{infile}.col" if fname == nil
-# system("echo -e '#{st}' | less -S -R -O #{fname}") if saveflag == 2
-# system("echo -e '#{st}' | less -S -R ")            if saveflag == 0
-# system("echo -e '#{st}' | less -S -R -o #{fname}") if saveflag == 1
 puts st
