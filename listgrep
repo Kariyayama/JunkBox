@@ -1,0 +1,63 @@
+#!/usr/bin/ruby 
+ptrn  = ARGV[ARGV.index('-p') + 1] if ARGV.include?('-p')
+ptrns = ARGV[ARGV.index('-P') + 1] if ARGV.include?('-P')
+file  = ARGV[ARGV.index('-f') + 1] if ARGV.include?('-f')
+files = ARGV[ARGV.index('-F') + 1] if ARGV.include?('-F')
+
+def help
+  puts "USAGE: listgrep [PATTERN] [FILE]"
+  puts "Option:"
+  puts "   -P: use query in file"
+  puts "   -p: use query in argment"
+  puts "   -F: use target in file"
+  puts "   -f: use target in argment"
+  puts "   -h: Show this script"
+end
+
+def have?(inf, pattern)
+  out = "-"
+  out = "+" if inf.include?(pattern.chomp)
+  return out
+end
+
+def list_pattern(l)
+  rtaryp = Array.new
+  File.open(l, "r").each_line do |line|
+    rtaryp.push(line.chomp)
+  end
+  return rtaryp
+end
+
+def list_file(f)
+  rtaryf = Hash.new
+  File.open(f, "r").each_line do |line|
+    rtaryf.store( line.chomp, File.open(line.chomp, "r").read)
+  end
+  return rtaryf
+end
+
+if ARGV.include?('-h') || ARGV.include?('--help')
+  help 
+  exit(1)
+elsif (file == nil && files == nil) || (ptrn == nil && ptrns == nil)
+  help 
+  exit(2)
+end
+
+fl  = File.open(file, "r").read if file != nil
+fle = {file => fl}       if file  != nil
+ptn = [ptrn]             if ptrn  != nil 
+ptn = list_pattern(ptrns) if ptrns != nil
+fle = list_file(files)   if files != nil
+
+if fle != nil && ptn != nil
+  fle.each_key do |file|
+    ptn.each do |pattern|
+      result = have?(fle[file], pattern)
+      puts "#{pattern} in #{file} : #{result}"
+    end
+  end
+else
+  puts "No entry."
+end
+
