@@ -1,0 +1,2 @@
+# JunkBox
+Idea box
