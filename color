@@ -19,6 +19,7 @@ if pattern == nil && (infile == [] || standerd == nil )
 end
 
 infile = Array.new
+input = ''
 if ARGV.include?('-i') 
   while ARGV[ARGV.index('-i') + 1] != nil  do
     infile.push(ARGV.pop)
@@ -41,15 +42,13 @@ if infile != []
 end
 
 domhash = Hash.new
-st = ""; i = 11; im = 0
+st = ""; i = 0; im = 0
 input.each_line do |line|
   line.chomp.scan(/#{pattern}/).each do |dom|
-    i += 3                if domhash.fetch(dom, nil) == nil 
+    i += 1                if domhash.fetch(dom, nil) == nil
+    i += 1                if i == 16 || i == 232 || i == 233 || i == 256 
     domhash.store(dom, i) if domhash.fetch(dom, nil) == nil 
-    if i > 256 
-      i = 11
-      im = 1
-    end
+    im = 1 if i > 256
   end
   st << line
 end
